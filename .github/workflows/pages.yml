@@ -44,6 +44,10 @@ jobs:
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
+        with:
+          # Activa Pages si el repositorio todavía no lo tiene: así el pipeline
+          # funciona en un clon nuevo sin tener que tocar la configuración web.
+          enablement: true
 
       - name: Upload the artifact
         uses: actions/upload-pages-artifact@v3
