@@ -5,15 +5,29 @@
    ========================================================================= */
 
 :root {
-  /* paleta — 6 valores, ni uno más */
-  --ink:        #020031;   /* tinta dominante */
-  --ink-raised: #0A0847;   /* superficies elevadas sobre tinta */
-  --paper:      #EEF1F8;   /* papel azulado, frío a propósito */
-  --paper-lift: #FFFFFF;   /* tarjetas */
-  --signal:     #6CCB64;   /* señal viva — nunca decorativa */
-  --signal-ink: #2C7A2A;   /* verde legible como texto sobre papel */
+  /* El tema lo decide el dispositivo. Declararlo aquí también hace que los
+     controles nativos y las barras de scroll cambien solos. */
+  color-scheme: light dark;
 
-  /* derivados */
+  /* ── Marca: los dos colores de Simón. No cambian con el tema. ────────── */
+  --brand-navy:  #020031;
+  --brand-green: #6CCB64;
+  --brand-paper: #EEF1F8;   /* el papel frío, fijo, para lo que no invierte */
+
+  /* El verde de marca sólo es legible como texto sobre fondo oscuro. Sobre
+     papel hace falta una versión oscurecida. Cada tema elige la que le sirve. */
+  --green-on-dark:  var(--brand-green);
+  --green-on-light: #2C7A2A;
+
+  /* ── Tema claro (el que se usa si el dispositivo no pide otra cosa) ──── */
+  --ink:        var(--brand-navy);   /* tinta dominante */
+  --paper:      var(--brand-paper);  /* papel azulado, frío a propósito */
+  --paper-lift: #FFFFFF;             /* tarjetas */
+  --signal:     var(--brand-green);  /* señal viva — nunca decorativa */
+  --signal-ink: var(--green-on-light);
+
+  /* derivados: siempre tinta mezclada hacia el papel, así funcionan igual
+     en los dos temas aunque los dos extremos se inviertan */
   --ink-80: color-mix(in srgb, var(--ink) 80%, var(--paper));
   --ink-60: color-mix(in srgb, var(--ink) 58%, var(--paper));
   --ink-40: color-mix(in srgb, var(--ink) 38%, var(--paper));
@@ -33,6 +47,29 @@
   --gutter: clamp(1.25rem, 5vw, 4rem);
   --rail:   208px;
   --maxw:   1180px;
+}
+
+/* ── Tema oscuro ─────────────────────────────────────────────────────────
+   El navy de marca deja de ser la tinta y pasa a ser el papel: la página se
+   vuelve el plano visto en negativo. Como todo el resto de la hoja se expresa
+   en «tinta mezclada hacia el papel», basta con intercambiar esos dos extremos
+   y volver a derivar. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink:        #E6EBF7;            /* la tinta ahora es el papel frío */
+    --paper:      var(--brand-navy);  /* y el navy de marca, el fondo */
+    --paper-lift: #0A0847;            /* tarjetas: un navy apenas levantado */
+    --signal:     var(--brand-green);
+    --signal-ink: var(--green-on-dark);
+
+    /* Sobre fondo oscuro el texto atenuado se desvanece antes, así que los
+       grises intermedios y los filetes se suben respecto del tema claro. */
+    --ink-80: color-mix(in srgb, var(--ink) 86%, var(--paper));
+    --ink-60: color-mix(in srgb, var(--ink) 70%, var(--paper));
+    --ink-40: color-mix(in srgb, var(--ink) 55%, var(--paper));
+    --rule:   color-mix(in srgb, var(--ink) 20%, transparent);
+    --rule-soft: color-mix(in srgb, var(--ink) 9%, transparent);
+  }
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -167,7 +204,7 @@ a { color: inherit; }
   text-transform: uppercase;
   color: var(--ink-60);
 }
-.eyebrow--inv { color: var(--signal); }
+.eyebrow--inv { color: var(--v-green); }
 
 .sec__title {
   margin: 0;
@@ -178,7 +215,7 @@ a { color: inherit; }
   line-height: 1.02;
   letter-spacing: -0.015em;
 }
-.sec__title--inv { color: var(--paper); }
+.sec__title--inv { color: var(--v-fg); }
 
 .sec__note {
   margin: 0.9rem 0 0;
@@ -299,7 +336,9 @@ a { color: inherit; }
 .btn--solid:hover {
   background: var(--signal);
   border-color: var(--signal);
-  color: var(--ink);
+  /* Sobre el verde el texto siempre va navy: en tema oscuro var(--ink) es
+     claro y quedaría claro sobre claro. */
+  color: var(--brand-navy);
 }
 
 /* ── El canvas de integración (la firma de la página) ────────────────── */
@@ -355,8 +394,11 @@ a { color: inherit; }
   stroke-width: 1.25;
 }
 
+/* El hub no invierte con el tema: es la marca. Se queda navy con texto claro en
+   los dos modos, que además es lo único que mantiene legible el verde de su
+   subtítulo. El trazo sí sigue a la tinta para que se despegue de la tarjeta. */
 .node--hub rect {
-  fill: var(--ink);
+  fill: var(--brand-navy);
   stroke: var(--ink);
 }
 
@@ -382,7 +424,7 @@ a { color: inherit; }
   font-weight: 800;
   font-size: 20px;
   letter-spacing: 0.02em;
-  fill: var(--paper);
+  fill: var(--brand-paper);
 }
 
 .node__sub2 {
@@ -390,7 +432,7 @@ a { color: inherit; }
   font-weight: 500;
   font-size: 7.5px;
   letter-spacing: 0.09em;
-  fill: var(--signal);
+  fill: var(--brand-green);
 }
 
 .node__led { fill: var(--signal); }
@@ -888,14 +930,32 @@ a { color: inherit; }
 
 /* ── ¿Qué piensa la IA sobre mí? ─────────────────────────────────────── */
 
+/* Esta sección va siempre al revés del resto de la página: en tema claro es un
+   bloque navy, en tema oscuro es un bloque de papel. Ese contraste es lo que la
+   convierte en el único momento distinto del recorrido, y se sostiene solo
+   porque sus colores salen de intercambiar --ink y --paper.
+   Los tokens se redeclaran aquí en vez de reasignar --ink: los derivados de
+   :root ya quedaron resueltos a un color y se heredan calculados. */
 .verdict {
-  background-color: var(--ink);
+  --v-bg:    var(--ink);
+  --v-fg:    var(--paper);
+  --v-dim:   color-mix(in srgb, var(--paper) 82%, var(--ink));
+  --v-faint: color-mix(in srgb, var(--paper) 55%, var(--ink));
+  --v-green: var(--green-on-dark);
+
+  background-color: var(--v-bg);
   background-image:
-    linear-gradient(color-mix(in srgb, var(--signal) 7%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, var(--signal) 7%, transparent) 1px, transparent 1px);
+    linear-gradient(color-mix(in srgb, var(--v-green) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--v-green) 7%, transparent) 1px, transparent 1px);
   background-size: 32px 32px;
-  color: var(--paper);
+  color: var(--v-fg);
   padding-block: clamp(4rem, 9vw, 7rem);
+}
+
+/* Invertida, esta sección queda clara: el verde de marca ya no contrasta como
+   texto y hay que usar la versión oscurecida. */
+@media (prefers-color-scheme: dark) {
+  .verdict { --v-green: var(--green-on-light); }
 }
 
 .verdict__inner {
@@ -909,16 +969,16 @@ a { color: inherit; }
   max-width: 52ch;
   font-size: clamp(1.1rem, 1rem + 0.6vw, 1.35rem);
   line-height: 1.42;
-  color: var(--paper);
+  color: var(--v-fg);
   font-weight: 500;
-  border-left: 2px solid var(--signal);
+  border-left: 2px solid var(--v-green);
   padding-left: 1.15rem;
 }
 
 .verdict__body { margin-top: 2.5rem; }
 
 .prose--inv p {
-  color: color-mix(in srgb, var(--paper) 82%, var(--ink));
+  color: var(--v-dim);
 }
 
 .pull {
@@ -931,7 +991,7 @@ a { color: inherit; }
   font-size: clamp(1.5rem, 1.1rem + 2vw, 2.5rem);
   line-height: 1.1;
   letter-spacing: -0.02em;
-  color: var(--signal);
+  color: var(--v-green);
   text-wrap: balance;
 }
 
@@ -941,7 +1001,7 @@ a { color: inherit; }
   display: block;
   width: 56px;
   height: 1px;
-  background: var(--signal);
+  background: var(--v-green);
   margin-bottom: 1rem;
 }
 
@@ -951,7 +1011,7 @@ a { color: inherit; }
   font-weight: 500;
   font-size: 0.82rem;
   letter-spacing: 0.06em;
-  color: var(--paper);
+  color: var(--v-fg);
 }
 
 .sign__note {
@@ -960,7 +1020,7 @@ a { color: inherit; }
   font-weight: 500;
   font-size: 0.72rem;
   letter-spacing: 0.04em;
-  color: color-mix(in srgb, var(--paper) 55%, var(--ink));
+  color: var(--v-faint);
   max-width: 48ch;
 }
 

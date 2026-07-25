@@ -66,6 +66,14 @@ salió de lo que contaste: el plan multicloud y la experiencia con AWS.
   el diagrama, estado activo, certificación obtenida— y nunca se usa como
   adorno. Para texto verde sobre fondo claro se usa `#2C7A2A`, porque el verde
   de marca no alcanza el contraste mínimo legible.
+- **Tema claro / oscuro:** lo decide el dispositivo (`prefers-color-scheme`),
+  no hay botón. En oscuro el navy de marca deja de ser la tinta y pasa a ser el
+  fondo: la página es el mismo plano visto en negativo. Todo el CSS se expresa
+  como «tinta mezclada hacia el papel», así que basta con intercambiar esos dos
+  extremos y volver a derivar. Tres cosas no invierten a propósito: el nodo OIC
+  del diagrama (es la marca, se queda navy en ambos temas), el texto sobre el
+  botón verde, y la sección de la IA, que va siempre al revés del resto de la
+  página para seguir siendo el único momento distinto del recorrido.
 - **Tipografía:** Archivo Expanded para titulares (aire de rótulo de plano
   técnico), IBM Plex Sans para cuerpo, y **San Francisco** —la tipografía de
   sistema de Apple— para etiquetas, chips y rótulos del diagrama. SF se pide
