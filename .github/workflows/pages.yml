@@ -1,0 +1,63 @@
+# Compila el sitio con Go y lo publica en GitHub Pages.
+#
+# El HTML generado no se versiona: la fuente de verdad es el código Go, y este
+# pipeline lo renderiza en cada push a main. Es el mismo comando que se corre en
+# local — `go run . -build` — así que lo que se publica es exactamente lo que se
+# ve al desarrollar.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Una publicación a la vez. No se cancelan las que ya están en curso: se deja
+# terminar el despliegue que esté corriendo antes de empezar el siguiente.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Render the site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          # Se toma la versión de go.mod para que CI y local no se separen.
+          go-version-file: go.mod
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Render the static site
+        run: go run . -build _site
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload the artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    name: Publish
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,30 @@
+# Configuración local de Claude Code (permisos de esta máquina, no del proyecto)
+.claude/
+
+# Salida del generador estático: se construye en CI, no se versiona
+/dist/
+/_site/
+
+# Binarios compilados de Go
+/portfolio
+*.exe
+*.test
+*.out
+
+# Basura del sistema operativo
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+desktop.ini
+
+# Archivos de conflicto que crea Dropbox al sincronizar
+*conflicted copy*
+*Caso de conflicto*
+
+# Editores
+.idea/
+.vscode/
+*.swp
+*~

@@ -1,0 +1,360 @@
+{{define "index.html" -}}
+<!doctype html>
+<html lang="{{.Meta.Lang}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{.Meta.Title}}</title>
+<meta name="description" content="{{.Meta.Description}}">
+<meta name="author" content="{{.Profile.Name}}">
+<meta name="theme-color" content="#020031">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="{{.Meta.Title}}">
+<meta property="og:description" content="{{.Meta.Description}}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/css/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23020031'/><circle cx='16' cy='16' r='6' fill='%236ccb64'/></svg>">
+</head>
+<body>
+
+<a class="skip" href="#profile">Skip to content</a>
+
+<!-- ── The bus: side rail with one node per section ─────────────────────── -->
+<nav class="bus" aria-label="Sections">
+  <span class="bus__wire" aria-hidden="true"></span>
+  <ol class="bus__list">
+    <li><a class="bus__node" href="#profile"        data-node><span>Profile</span></a></li>
+    <li><a class="bus__node" href="#experience"     data-node><span>Experience</span></a></li>
+    <li><a class="bus__node" href="#stack"          data-node><span>Stack</span></a></li>
+    <li><a class="bus__node" href="#certifications" data-node><span>Certifications</span></a></li>
+    <li><a class="bus__node" href="#vision"         data-node><span>Vision</span></a></li>
+    <li><a class="bus__node" href="#education"      data-node><span>Education</span></a></li>
+    <li><a class="bus__node" href="#facts"          data-node><span>Fun facts</span></a></li>
+    <li><a class="bus__node" href="#ai"             data-node><span>The AI’s take</span></a></li>
+    <li><a class="bus__node" href="#contact"        data-node><span>Contact</span></a></li>
+  </ol>
+</nav>
+
+<div class="stage">
+
+<!-- ── Hero ────────────────────────────────────────────────────────────── -->
+<header class="hero">
+  <div class="hero__text">
+    <p class="eyebrow">Systems engineer · {{.Profile.Location}}</p>
+    <h1 class="hero__name">{{.Profile.Name}}</h1>
+    <p class="hero__claim">{{.Profile.Headline}}</p>
+
+    <!-- Title block, like the data panel of a technical drawing -->
+    <dl class="titleblock">
+      <div class="titleblock__cell">
+        <dt>Based in</dt>
+        <dd>{{.Profile.Location}}</dd>
+      </div>
+      <div class="titleblock__cell">
+        <dt>Status</dt>
+        <dd><span class="live" aria-hidden="true"></span>{{.Profile.Available}}</dd>
+      </div>
+      <div class="titleblock__cell">
+        <dt>Languages</dt>
+        <dd>{{range $i, $l := .Languages}}{{if $i}} · {{end}}{{$l.Name}} {{$l.Level}}{{end}}</dd>
+      </div>
+      <div class="titleblock__cell">
+        <dt>Oracle</dt>
+        <dd>3 certifications · 1 in progress</dd>
+      </div>
+    </dl>
+
+    <div class="hero__actions">
+      {{range .Profile.Links}}{{if .URL}}
+      <a class="btn{{if eq .Kind "mail"}} btn--solid{{end}}" href="{{.URL}}">{{.Value}}</a>
+      {{end}}{{end}}
+    </div>
+  </div>
+
+  <!-- ── The signature: a real integration, the kind Simón builds daily ── -->
+  <figure class="canvas">
+    <figcaption class="canvas__cap">
+      <span class="canvas__title">Typical integration</span>
+      <span class="canvas__status"><span class="live" aria-hidden="true"></span>{{.Flow.Status}}</span>
+    </figcaption>
+
+    <svg class="flow" viewBox="0 0 600 330" role="img"
+         aria-label="Diagram: SAP ERP, FTP/SFTP and queues feed into Oracle Integration Cloud, which publishes out to API Gateway, OKE and Oracle Database.">
+      <defs>
+        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M20 0H0v20" fill="none" stroke="currentColor" stroke-width="1" opacity=".07"/>
+        </pattern>
+      </defs>
+      <rect width="600" height="330" fill="url(#grid)"/>
+
+      <!-- wires -->
+      <g class="flow__wires" fill="none" stroke-width="1.5">
+        <path class="wire" d="M128 46 H168 V164 H208"/>
+        <path class="wire" d="M128 164 H208"/>
+        <path class="wire" d="M128 282 H168 V164 H208"/>
+        <path class="wire" d="M320 164 H360 V60 H400"/>
+        <path class="wire" d="M320 164 H400"/>
+        <path class="wire" d="M320 164 H360 V268 H400"/>
+      </g>
+
+      <!-- packets travelling the wires -->
+      <g class="flow__packets" aria-hidden="true">
+        <circle class="pkt pkt--1" r="3.5"/>
+        <circle class="pkt pkt--2" r="3.5"/>
+        <circle class="pkt pkt--3" r="3.5"/>
+        <circle class="pkt pkt--4" r="3.5"/>
+        <circle class="pkt pkt--5" r="3.5"/>
+        <circle class="pkt pkt--6" r="3.5"/>
+      </g>
+
+      <g class="flow__nodes">
+        <!-- sources -->
+        {{range $i, $n := .Flow.Sources}}
+        <g class="node" transform="translate(16,{{if eq $i 0}}28{{else if eq $i 1}}146{{else}}264{{end}})">
+          <rect width="112" height="36" rx="2"/>
+          <text class="node__label" x="12" y="17">{{$n.Label}}</text>
+          <text class="node__sub"   x="12" y="29">{{$n.Sub}}</text>
+        </g>
+        {{end}}
+
+        <!-- the hub -->
+        <g class="node node--hub" transform="translate(208,138)">
+          <rect width="112" height="52" rx="2"/>
+          <text class="node__hub"  x="14" y="26">{{.Flow.Hub.Label}}</text>
+          <text class="node__sub2" x="14" y="40">{{.Flow.Hub.Sub}}</text>
+        </g>
+
+        <!-- destinations -->
+        {{range $i, $n := .Flow.Endpoints}}
+        <g class="node" transform="translate(400,{{if eq $i 0}}42{{else if eq $i 1}}146{{else}}250{{end}})">
+          <rect width="156" height="36" rx="2"/>
+          <text class="node__label" x="12" y="17">{{$n.Label}}</text>
+          <text class="node__sub"   x="12" y="29">{{$n.Sub}}</text>
+          <circle class="node__led" cx="142" cy="18" r="3"/>
+        </g>
+        {{end}}
+      </g>
+    </svg>
+  </figure>
+</header>
+
+<!-- ── Profile ─────────────────────────────────────────────────────────── -->
+<section class="sec" id="profile">
+  <div class="sec__head">
+    <p class="eyebrow">Profile</p>
+    <h2 class="sec__title">What I do</h2>
+  </div>
+  <div class="sec__body prose">
+    {{range .Profile.Summary}}<p>{{.}}</p>{{end}}
+  </div>
+</section>
+
+<!-- ── Experience ──────────────────────────────────────────────────────── -->
+<section class="sec" id="experience">
+  <div class="sec__head">
+    <p class="eyebrow">Experience · {{len .Roles}} roles</p>
+    <h2 class="sec__title">Where I have been</h2>
+    <p class="sec__note">Three tracks running in parallel: the cloud job, the teaching and the community.</p>
+    <ul class="legend">
+      <li><span class="legend__key legend__key--cloud"></span>Cloud</li>
+      <li><span class="legend__key legend__key--academia"></span>Teaching</li>
+      <li><span class="legend__key legend__key--comunidad"></span>Community</li>
+    </ul>
+  </div>
+
+  <ol class="track">
+    {{range .Roles}}
+    <li class="role role--{{.Track}}{{if .Current}} role--live{{end}}">
+      <div class="role__when">
+        <span class="role__period">{{.Period}}</span>
+        {{if .Current}}<span class="role__badge"><span class="live" aria-hidden="true"></span>current</span>{{end}}
+      </div>
+      <div class="role__what">
+        <h3 class="role__title">{{.Title}}</h3>
+        <p class="role__org">{{.Org}}</p>
+        {{if .Blurb}}<p class="role__blurb">{{.Blurb}}</p>{{end}}
+        <ul class="role__bullets">
+          {{range .Bullets}}<li>{{.}}</li>{{end}}
+        </ul>
+        {{if .Stack}}
+        <ul class="chips">
+          {{range .Stack}}<li class="chip">{{.}}</li>{{end}}
+        </ul>
+        {{end}}
+      </div>
+    </li>
+    {{end}}
+  </ol>
+</section>
+
+<!-- ── Stack ───────────────────────────────────────────────────────────── -->
+<section class="sec" id="stack">
+  <div class="sec__head">
+    <p class="eyebrow">Competencies</p>
+    <h2 class="sec__title">What I work with</h2>
+  </div>
+  <div class="grid grid--sets">
+    {{range .SkillSets}}
+    <article class="set">
+      <h3 class="set__domain">{{.Domain}}</h3>
+      {{if .Note}}<p class="set__note">{{.Note}}</p>{{end}}
+      <ul class="chips">
+        {{range .Items}}<li class="chip">{{.}}</li>{{end}}
+      </ul>
+    </article>
+    {{end}}
+  </div>
+</section>
+
+<!-- ── Certifications ──────────────────────────────────────────────────── -->
+<section class="sec" id="certifications">
+  <div class="sec__head">
+    <p class="eyebrow">Certifications · {{len .Certs}}</p>
+    <h2 class="sec__title">What is verified</h2>
+  </div>
+  <ul class="certs">
+    {{range .Certs}}
+    <li class="cert{{if not .Done}} cert--wip{{end}}">
+      <span class="cert__dot" aria-hidden="true"></span>
+      <span class="cert__name">{{.Name}}</span>
+      <span class="cert__issuer">{{.Issuer}}</span>
+      <span class="cert__status">{{.Status}}</span>
+    </li>
+    {{end}}
+  </ul>
+</section>
+
+<!-- ── Vision: the multicloud plan ─────────────────────────────────────── -->
+<section class="sec" id="vision">
+  <div class="sec__head">
+    <p class="eyebrow">Looking ahead</p>
+    <h2 class="sec__title">Where I am headed</h2>
+    <p class="sec__note">{{.Vision.Lede}}</p>
+  </div>
+  <div class="sec__body">
+    <div class="prose">
+      {{range .Vision.Paragraphs}}<p>{{.}}</p>{{end}}
+    </div>
+
+    <!-- Los mismos tres estados que la lista de certificaciones: relleno =
+         conseguido, aro verde = ya hay trabajo real, hueco = en la ruta. -->
+    <ul class="providers">
+      {{range .Vision.Providers}}
+      <li class="provider provider--{{.State}}">
+        <p class="provider__status">
+          <span class="provider__dot" aria-hidden="true"></span>{{.Status}}
+        </p>
+        <h3 class="provider__name">{{.Name}}</h3>
+        <p class="provider__note">{{.Note}}</p>
+      </li>
+      {{end}}
+    </ul>
+  </div>
+</section>
+
+<!-- ── Education ───────────────────────────────────────────────────────── -->
+<section class="sec" id="education">
+  <div class="sec__head">
+    <p class="eyebrow">Education</p>
+    <h2 class="sec__title">Two degrees at once</h2>
+  </div>
+  <div class="sec__body">
+    <div class="grid grid--studies">
+      {{range .Studies}}
+      <article class="study">
+        <p class="study__period">{{.Period}}</p>
+        <h3 class="study__program">{{.Program}}</h3>
+        <p class="study__school">{{.School}}</p>
+        {{if .Note}}<p class="study__note">{{.Note}}</p>{{end}}
+      </article>
+      {{end}}
+    </div>
+
+    <div class="langs">
+      <h3 class="langs__title">Languages</h3>
+      {{range .Languages}}
+      <div class="lang">
+        <span class="lang__name">{{.Name}}</span>
+        <span class="lang__bar"><span class="lang__fill" style="width:{{.Meter}}%"></span></span>
+        <span class="lang__level">{{.Level}}</span>
+      </div>
+      {{end}}
+    </div>
+  </div>
+</section>
+
+<!-- ── Fun facts ───────────────────────────────────────────────────────── -->
+{{if .FunFacts}}
+<section class="sec" id="facts">
+  <div class="sec__head">
+    <p class="eyebrow">Off the clock</p>
+    <h2 class="sec__title">Fun facts about me</h2>
+    <p class="sec__note">The things that do not fit on a CV.</p>
+  </div>
+  <ul class="facts">
+    {{range .FunFacts}}
+    <li class="fact">
+      <span class="fact__tag">{{.Tag}}</span>
+      <p class="fact__text">{{.Text}}</p>
+    </li>
+    {{end}}
+  </ul>
+</section>
+{{end}}
+</div><!-- /.stage -->
+
+<!-- ── What does the AI think of me? — the one block in full navy ──────── -->
+<section class="verdict" id="ai">
+  <div class="verdict__inner">
+    <div class="sec__head">
+      <p class="eyebrow eyebrow--inv">Second opinion</p>
+      <h2 class="sec__title sec__title--inv">What does the AI think of me?</h2>
+    </div>
+
+    <p class="verdict__lede">{{.AIVerdict.Lede}}</p>
+
+    <div class="verdict__body prose prose--inv">
+      {{range .AIVerdict.Paragraphs}}<p>{{.}}</p>{{end}}
+    </div>
+
+    <blockquote class="pull">{{.AIVerdict.Pullquote}}</blockquote>
+
+    <footer class="sign">
+      <span class="sign__rule" aria-hidden="true"></span>
+      <p class="sign__by">{{.AIVerdict.SignedBy}}</p>
+      <p class="sign__note">{{.AIVerdict.SignedNote}}</p>
+    </footer>
+  </div>
+</section>
+
+<div class="stage">
+<!-- ── Contact ─────────────────────────────────────────────────────────── -->
+<section class="sec sec--last" id="contact">
+  <div class="sec__head">
+    <p class="eyebrow">Contact</p>
+    <h2 class="sec__title">Let’s talk</h2>
+  </div>
+  <div class="sec__body">
+    <ul class="contact">
+      {{range .Profile.Links}}{{if .URL}}
+      <li class="contact__row">
+        <span class="contact__label">{{.Label}}</span>
+        <a class="contact__value" href="{{.URL}}">{{.Value}}</a>
+      </li>
+      {{end}}{{end}}
+    </ul>
+  </div>
+</section>
+
+<footer class="foot">
+  <p>{{.Profile.Name}} · {{.Profile.Location}}</p>
+  <p class="foot__meta">Built in Go — server, templates and typed content. {{.SourceNote}}. Updated {{.BuiltAt}}.</p>
+</footer>
+</div>
+
+<script src="static/js/site.js" defer></script>
+</body>
+</html>
+{{- end}}
