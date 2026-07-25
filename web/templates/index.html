@@ -68,7 +68,7 @@
 
     <div class="hero__actions">
       {{range .Profile.Links}}{{if .URL}}
-      <a class="btn{{if eq .Kind "mail"}} btn--solid{{end}}" href="{{.URL}}">{{.Value}}</a>
+      <a class="btn{{if eq .Kind "mail"}} btn--solid{{end}}" href="{{href .URL}}">{{.Value}}</a>
       {{end}}{{end}}
     </div>
   </div>
@@ -341,7 +341,7 @@
       {{range .Profile.Links}}{{if .URL}}
       <li class="contact__row">
         <span class="contact__label">{{.Label}}</span>
-        <a class="contact__value" href="{{.URL}}">{{.Value}}</a>
+        <a class="contact__value" href="{{href .URL}}">{{.Value}}</a>
       </li>
       {{end}}{{end}}
     </ul>

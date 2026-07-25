@@ -17,8 +17,10 @@ import (
 	"io/fs"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"simonmarquez/portfolio/internal/content"
 )
@@ -54,11 +56,36 @@ func main() {
 	}
 }
 
-// parseTemplates loads the HTML templates. There are no template helpers on
-// purpose: everything the page shows is already shaped correctly in
-// internal/content, so the markup is plain field access and ranges.
+// parseTemplates loads the HTML templates.
 func parseTemplates() (*template.Template, error) {
-	return template.ParseFS(templateFS, "web/templates/*.html")
+	return template.New("").Funcs(helpers()).ParseFS(templateFS, "web/templates/*.html")
+}
+
+// helpers holds the one thing the template cannot do on its own. Everything
+// else is plain field access, because internal/content already shapes the data.
+func helpers() template.FuncMap {
+	return template.FuncMap{"href": href}
+}
+
+// href marks a link as safe to emit.
+//
+// html/template only trusts http, https and mailto, and silently rewrites
+// anything else to "#ZgotmplZ" — which is what happened to the tel: link on the
+// phone button. Marking the value as template.URL skips that check, so this
+// re-does the check itself and only lets through the four schemes the site
+// actually uses. Anything else is neutralised, exactly as before.
+func href(raw string) template.URL {
+	parsed, err := url.Parse(raw)
+	if err != nil {
+		return "#"
+	}
+
+	switch strings.ToLower(parsed.Scheme) {
+	case "http", "https", "mailto", "tel":
+		return template.URL(raw)
+	default:
+		return "#"
+	}
 }
 
 // serve runs the site over HTTP, with the embedded assets mounted at /static.
