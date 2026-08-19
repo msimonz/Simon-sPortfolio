@@ -178,7 +178,7 @@ func certs() []Cert {
 		{Name: "OCI Foundations Associate", Issuer: "Oracle", Status: "Earned", Done: true},
 		{Name: "OCI Developer Professional", Issuer: "Oracle", Status: "Earned", Done: true},
 		{Name: "OCI Application Integration Professional", Issuer: "Oracle", Status: "Earned", Done: true},
-		{Name: "OCI Kubernetes Engine Specialist", Issuer: "Oracle", Status: "In progress", Done: false},
+		{Name: "OCI Architect Associate", Issuer: "Oracle", Status: "In progress", Done: false},
 	}
 }
 
