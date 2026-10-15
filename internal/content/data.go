@@ -57,7 +57,7 @@ func profile() Profile {
 			// wa.me es la API de enlaces de WhatsApp: abre el chat directo con el
 			// número, con el mensaje ya escrito. El número va sin «+» ni espacios,
 			// que es como lo exige.
-			{Label: "WhatsApp", Value: "+57 316 819 2421", URL: "https://wa.me/573168192421?text=Hi%20Sim%C3%B3n%2C%20I%20came%20across%20your%20portfolio%20and%20I%27d%20like%20to%20talk.", Kind: "phone"},
+			{Label: "WhatsApp", Value: "+57 300 128 0022", URL: "https://wa.me/573001280022?text=Hi%20Sim%C3%B3n%2C%20I%20came%20across%20your%20portfolio%20and%20I%27d%20like%20to%20talk.", Kind: "phone"},
 			// El enlace de LinkedIn va sin los parámetros utm_* del botón
 			// «compartir» (sólo sirven para rastrear de dónde vino el clic) y con
 			// los acentos codificados, que es como debe viajar una URL.
