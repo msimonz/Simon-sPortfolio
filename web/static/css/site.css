@@ -116,6 +116,40 @@ a { color: inherit; }
 }
 .skip:focus { left: 0; }
 
+/* ── Selector de idioma ──────────────────────────────────────────────── */
+
+/* Arriba a la derecha y fijo, del lado contrario al rail. Cada idioma es su
+   propia página estática; el activo va relleno en tinta, igual que el botón
+   sólido. Lleva fondo propio para seguir legible al pasar sobre la sección
+   invertida de la IA. */
+.langswitch {
+  position: fixed;
+  top: clamp(0.75rem, 2vw, 1.25rem);
+  right: var(--gutter);
+  z-index: 30;
+  display: flex;
+  border: 1px solid var(--rule);
+  background: var(--paper-lift);
+  font-family: var(--label);
+  font-weight: 600;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+}
+
+.langswitch a {
+  padding: 0.4rem 0.7rem;
+  text-decoration: none;
+  color: var(--ink-40);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.langswitch a + a { border-left: 1px solid var(--rule); }
+.langswitch a:hover { color: var(--ink); }
+
+.langswitch a[aria-current="page"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
 /* ── El bus: rail de navegación ──────────────────────────────────────── */
 
 .bus {
@@ -1145,7 +1179,7 @@ a { color: inherit; }
 /* ── Impresión: que la hoja de vida siga siendo una hoja ─────────────── */
 
 @media print {
-  .bus, .canvas, .hero__actions, .skip { display: none; }
+  .bus, .langswitch, .canvas, .hero__actions, .skip { display: none; }
   body { background: #fff; color: #000; }
   .verdict { background: #fff; color: #000; }
   .verdict .sec__title--inv, .prose--inv p, .sign__by, .verdict__lede { color: #000; }

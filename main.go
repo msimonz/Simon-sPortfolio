@@ -3,7 +3,10 @@
 //
 //	go run .              → http://localhost:8080
 //	go run . -port 3000   → another port
-//	go run . -build dist  → writes dist/index.html plus assets, then exits
+//	go run . -build dist  → writes dist/index.html, dist/es/index.html plus assets, then exits
+//
+// English lives at the root and Spanish under /es/; a switch in the top-right
+// corner of the page moves between them.
 //
 // Standard library only: net/http, html/template, embed. No dependencies.
 package main
@@ -41,17 +44,15 @@ func main() {
 		log.Fatalf("plantillas: %v", err)
 	}
 
-	site := content.Load()
-
 	if *buildDir != "" {
-		if err := build(tmpl, site, *buildDir); err != nil {
+		if err := build(tmpl, *buildDir); err != nil {
 			log.Fatalf("build: %v", err)
 		}
 		fmt.Printf("Sitio estático escrito en %s\n", *buildDir)
 		return
 	}
 
-	if err := serve(tmpl, site, *port); err != nil {
+	if err := serve(tmpl, *port); err != nil {
 		log.Fatalf("servidor: %v", err)
 	}
 }
@@ -88,8 +89,9 @@ func href(raw string) template.URL {
 	}
 }
 
-// serve runs the site over HTTP, with the embedded assets mounted at /static.
-func serve(tmpl *template.Template, site content.Site, port int) error {
+// serve runs the site over HTTP, with the embedded assets mounted at /static and
+// one page per language: / for English, /es/ for Spanish.
+func serve(tmpl *template.Template, port int) error {
 	assets, err := fs.Sub(staticFS, "web/static")
 	if err != nil {
 		return err
@@ -97,21 +99,35 @@ func serve(tmpl *template.Template, site content.Site, port int) error {
 
 	mux := http.NewServeMux()
 	mux.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.FS(assets))))
-	mux.HandleFunc("GET /{$}", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		if err := tmpl.ExecuteTemplate(w, "index.html", site); err != nil {
-			log.Printf("render: %v", err)
-		}
-	})
+	for _, lang := range content.Langs {
+		site := content.Load(lang)
+		mux.HandleFunc("GET /"+lang.Path()+"{$}", func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			if err := tmpl.ExecuteTemplate(w, "index.html", site); err != nil {
+				log.Printf("render: %v", err)
+			}
+		})
+	}
 
 	addr := fmt.Sprintf(":%d", port)
-	fmt.Printf("Portafolio de %s en http://localhost%s\n", site.Profile.Given, addr)
+	fmt.Printf("Portafolio en http://localhost%s (español en /es/)\n", addr)
 	return http.ListenAndServe(addr, mux)
 }
 
 // build writes the site to disk as plain files, so it can be hosted on GitHub
 // Pages, Netlify, an OCI bucket, or anything else that serves static content.
-func build(tmpl *template.Template, site content.Site, dir string) error {
+func build(tmpl *template.Template, dir string) error {
+	for _, lang := range content.Langs {
+		if err := buildPage(tmpl, content.Load(lang), filepath.Join(dir, lang.Path())); err != nil {
+			return err
+		}
+	}
+
+	return copyStatic(dir)
+}
+
+// buildPage renders one language's page as dir/index.html.
+func buildPage(tmpl *template.Template, site content.Site, dir string) error {
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return err
 	}
@@ -122,11 +138,7 @@ func build(tmpl *template.Template, site content.Site, dir string) error {
 	}
 	defer page.Close()
 
-	if err := tmpl.ExecuteTemplate(page, "index.html", site); err != nil {
-		return err
-	}
-
-	return copyStatic(dir)
+	return tmpl.ExecuteTemplate(page, "index.html", site)
 }
 
 // copyStatic mirrors the embedded asset tree into the build directory.

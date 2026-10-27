@@ -5,6 +5,7 @@ package content
 
 // Site is the whole portfolio, ready to hand to a template.
 type Site struct {
+	Lang       Lang
 	Meta       Meta
 	Profile    Profile
 	Roles      []Role

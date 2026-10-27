@@ -3,7 +3,9 @@
 Sitio personal escrito **enteramente en Go**, sólo con la librería estándar
 (`net/http`, `html/template`, `embed`). Cero dependencias, cero `node_modules`.
 
-La página está **en inglés**; el código y estos comentarios siguen en español.
+La página sale **en inglés y en español**: inglés en la raíz (`/`) y español en
+`/es/`. Arriba a la derecha hay un selector **EN | ES** que pasa de una a otra.
+El código y estos comentarios siguen en español.
 
 ## Correrlo
 
@@ -21,7 +23,7 @@ Pages, Netlify, Vercel o un bucket de OCI Object Storage:
 go run . -build dist
 ```
 
-Eso escribe `dist/index.html` y `dist/static/`. No hace falta servidor Go en
+Eso escribe `dist/index.html`, `dist/es/index.html` y `dist/static/`. No hace falta servidor Go en
 producción: el servidor es sólo para desarrollo.
 
 ## Estructura
@@ -30,11 +32,16 @@ producción: el servidor es sólo para desarrollo.
 main.go                     servidor + generador estático
 internal/content/
   types.go                  los tipos del contenido
-  data.go                   ← TODO EL TEXTO DEL SITIO ESTÁ AQUÍ
+  data.go                   ← TODO EL TEXTO DEL SITIO ESTÁ AQUÍ (inglés y español)
+  lang.go                   los idiomas y cómo se elige el texto de cada uno
 web/templates/index.html    la página
 web/static/css/site.css     estilos
 web/static/js/site.js       rail de navegación + medición de los cables del diagrama
 ```
+
+Cada texto de `data.go` va en pareja: `l.pick("inglés", "español")`. Las
+etiquetas propias de la plantilla (títulos de sección, rail, pie) hacen lo
+mismo con `{{.T "inglés" "español"}}`. Si cambias una versión, cambia la otra.
 
 Los assets van embebidos en el binario con `go:embed`, así que el ejecutable
 compilado es un solo archivo sin nada alrededor.

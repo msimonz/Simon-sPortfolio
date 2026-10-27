@@ -15,26 +15,32 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="static/css/site.css">
+<link rel="stylesheet" href="{{.Root}}static/css/site.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23020031'/><circle cx='16' cy='16' r='6' fill='%236ccb64'/></svg>">
 </head>
 <body>
 
-<a class="skip" href="#profile">Skip to content</a>
+<a class="skip" href="#profile">{{.T "Skip to content" "Saltar al contenido"}}</a>
+
+<!-- ── Language switch: one static page per language ─────────────────── -->
+<nav class="langswitch" aria-label="{{.T "Language" "Idioma"}}">
+  <a href="{{.Root}}" hreflang="en" lang="en"{{if eq .Meta.Lang "en"}} aria-current="page"{{end}}>EN</a>
+  <a href="{{.Root}}es/" hreflang="es" lang="es"{{if eq .Meta.Lang "es"}} aria-current="page"{{end}}>ES</a>
+</nav>
 
 <!-- ── The bus: side rail with one node per section ─────────────────────── -->
-<nav class="bus" aria-label="Sections">
+<nav class="bus" aria-label="{{.T "Sections" "Secciones"}}">
   <span class="bus__wire" aria-hidden="true"></span>
   <ol class="bus__list">
-    <li><a class="bus__node" href="#profile"        data-node><span>Profile</span></a></li>
-    <li><a class="bus__node" href="#experience"     data-node><span>Experience</span></a></li>
-    <li><a class="bus__node" href="#stack"          data-node><span>Stack</span></a></li>
-    <li><a class="bus__node" href="#certifications" data-node><span>Certifications</span></a></li>
-    <li><a class="bus__node" href="#vision"         data-node><span>Vision</span></a></li>
-    <li><a class="bus__node" href="#education"      data-node><span>Education</span></a></li>
-    <li><a class="bus__node" href="#facts"          data-node><span>Fun facts</span></a></li>
-    <li><a class="bus__node" href="#ai"             data-node><span>The AI’s take</span></a></li>
-    <li><a class="bus__node" href="#contact"        data-node><span>Contact</span></a></li>
+    <li><a class="bus__node" href="#profile"        data-node><span>{{.T "Profile" "Perfil"}}</span></a></li>
+    <li><a class="bus__node" href="#experience"     data-node><span>{{.T "Experience" "Experiencia"}}</span></a></li>
+    <li><a class="bus__node" href="#stack"          data-node><span>{{.T "Stack" "Stack"}}</span></a></li>
+    <li><a class="bus__node" href="#certifications" data-node><span>{{.T "Certifications" "Certificaciones"}}</span></a></li>
+    <li><a class="bus__node" href="#vision"         data-node><span>{{.T "Vision" "Visión"}}</span></a></li>
+    <li><a class="bus__node" href="#education"      data-node><span>{{.T "Education" "Formación"}}</span></a></li>
+    <li><a class="bus__node" href="#facts"          data-node><span>{{.T "Fun facts" "Datos curiosos"}}</span></a></li>
+    <li><a class="bus__node" href="#ai"             data-node><span>{{.T "The AI’s take" "Lo que dice la IA"}}</span></a></li>
+    <li><a class="bus__node" href="#contact"        data-node><span>{{.T "Contact" "Contacto"}}</span></a></li>
   </ol>
 </nav>
 
@@ -43,27 +49,27 @@
 <!-- ── Hero ────────────────────────────────────────────────────────────── -->
 <header class="hero">
   <div class="hero__text">
-    <p class="eyebrow">Systems engineer · {{.Profile.Location}}</p>
+    <p class="eyebrow">{{.T "Systems engineer" "Ingeniero de sistemas"}} · {{.Profile.Location}}</p>
     <h1 class="hero__name">{{.Profile.Name}}</h1>
     <p class="hero__claim">{{.Profile.Headline}}</p>
 
     <!-- Title block, like the data panel of a technical drawing -->
     <dl class="titleblock">
       <div class="titleblock__cell">
-        <dt>Based in</dt>
+        <dt>{{.T "Based in" "Ubicación"}}</dt>
         <dd>{{.Profile.Location}}</dd>
       </div>
       <div class="titleblock__cell">
-        <dt>Status</dt>
+        <dt>{{.T "Status" "Estado"}}</dt>
         <dd><span class="live" aria-hidden="true"></span>{{.Profile.Available}}</dd>
       </div>
       <div class="titleblock__cell">
-        <dt>Languages</dt>
+        <dt>{{.T "Languages" "Idiomas"}}</dt>
         <dd>{{range $i, $l := .Languages}}{{if $i}} · {{end}}{{$l.Name}} {{$l.Level}}{{end}}</dd>
       </div>
       <div class="titleblock__cell">
         <dt>Oracle</dt>
-        <dd>3 certifications · 1 in progress</dd>
+        <dd>{{.T "3 certifications · 1 in progress" "3 certificaciones · 1 en curso"}}</dd>
       </div>
     </dl>
 
@@ -77,12 +83,12 @@
   <!-- ── The signature: a real integration, the kind Simón builds daily ── -->
   <figure class="canvas">
     <figcaption class="canvas__cap">
-      <span class="canvas__title">Typical integration</span>
+      <span class="canvas__title">{{.T "Typical integration" "Integración típica"}}</span>
       <span class="canvas__status"><span class="live" aria-hidden="true"></span>{{.Flow.Status}}</span>
     </figcaption>
 
     <svg class="flow" viewBox="0 0 600 330" role="img"
-         aria-label="Diagram: SAP ERP, FTP/SFTP and queues feed into Oracle Integration Cloud, which publishes out to API Gateway, OKE and Oracle Database.">
+         aria-label="{{.T "Diagram: SAP ERP, FTP/SFTP and queues feed into Oracle Integration Cloud, which publishes out to API Gateway, OKE and Oracle Database." "Diagrama: SAP ERP, FTP/SFTP y colas alimentan Oracle Integration Cloud, que publica hacia API Gateway, OKE y Oracle Database."}}">
       <defs>
         <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
           <path d="M20 0H0v20" fill="none" stroke="currentColor" stroke-width="1" opacity=".07"/>
@@ -144,8 +150,8 @@
 <!-- ── Profile ─────────────────────────────────────────────────────────── -->
 <section class="sec" id="profile">
   <div class="sec__head">
-    <p class="eyebrow">Profile</p>
-    <h2 class="sec__title">What I do</h2>
+    <p class="eyebrow">{{.T "Profile" "Perfil"}}</p>
+    <h2 class="sec__title">{{.T "What I do" "Qué hago"}}</h2>
   </div>
   <div class="sec__body prose">
     {{range .Profile.Summary}}<p>{{.}}</p>{{end}}
@@ -155,13 +161,13 @@
 <!-- ── Experience ──────────────────────────────────────────────────────── -->
 <section class="sec" id="experience">
   <div class="sec__head">
-    <p class="eyebrow">Experience · {{len .Roles}} roles</p>
-    <h2 class="sec__title">Where I have been</h2>
-    <p class="sec__note">Three tracks running in parallel: the cloud job, the teaching and the community.</p>
+    <p class="eyebrow">{{.T "Experience" "Experiencia"}} · {{len .Roles}} {{.T "roles" "cargos"}}</p>
+    <h2 class="sec__title">{{.T "Where I have been" "Dónde he estado"}}</h2>
+    <p class="sec__note">{{.T "Three tracks running in parallel: the cloud job, the teaching and the community." "Tres vías en paralelo: el trabajo en la nube, la docencia y la comunidad."}}</p>
     <ul class="legend">
-      <li><span class="legend__key legend__key--cloud"></span>Cloud</li>
-      <li><span class="legend__key legend__key--academia"></span>Teaching</li>
-      <li><span class="legend__key legend__key--comunidad"></span>Community</li>
+      <li><span class="legend__key legend__key--cloud"></span>{{.T "Cloud" "Nube"}}</li>
+      <li><span class="legend__key legend__key--academia"></span>{{.T "Teaching" "Docencia"}}</li>
+      <li><span class="legend__key legend__key--comunidad"></span>{{.T "Community" "Comunidad"}}</li>
     </ul>
   </div>
 
@@ -170,7 +176,7 @@
     <li class="role role--{{.Track}}{{if .Current}} role--live{{end}}">
       <div class="role__when">
         <span class="role__period">{{.Period}}</span>
-        {{if .Current}}<span class="role__badge"><span class="live" aria-hidden="true"></span>current</span>{{end}}
+        {{if .Current}}<span class="role__badge"><span class="live" aria-hidden="true"></span>{{$.T "current" "actual"}}</span>{{end}}
       </div>
       <div class="role__what">
         <h3 class="role__title">{{.Title}}</h3>
@@ -193,8 +199,8 @@
 <!-- ── Stack ───────────────────────────────────────────────────────────── -->
 <section class="sec" id="stack">
   <div class="sec__head">
-    <p class="eyebrow">Competencies</p>
-    <h2 class="sec__title">What I work with</h2>
+    <p class="eyebrow">{{.T "Competencies" "Competencias"}}</p>
+    <h2 class="sec__title">{{.T "What I work with" "Con qué trabajo"}}</h2>
   </div>
   <div class="grid grid--sets">
     {{range .SkillSets}}
@@ -212,8 +218,8 @@
 <!-- ── Certifications ──────────────────────────────────────────────────── -->
 <section class="sec" id="certifications">
   <div class="sec__head">
-    <p class="eyebrow">Certifications · {{len .Certs}}</p>
-    <h2 class="sec__title">What is verified</h2>
+    <p class="eyebrow">{{.T "Certifications" "Certificaciones"}} · {{len .Certs}}</p>
+    <h2 class="sec__title">{{.T "What is verified" "Lo que está verificado"}}</h2>
   </div>
   <ul class="certs">
     {{range .Certs}}
@@ -230,8 +236,8 @@
 <!-- ── Vision: the multicloud plan ─────────────────────────────────────── -->
 <section class="sec" id="vision">
   <div class="sec__head">
-    <p class="eyebrow">Looking ahead</p>
-    <h2 class="sec__title">Where I am headed</h2>
+    <p class="eyebrow">{{.T "Looking ahead" "Hacia adelante"}}</p>
+    <h2 class="sec__title">{{.T "Where I am headed" "Hacia dónde voy"}}</h2>
     <p class="sec__note">{{.Vision.Lede}}</p>
   </div>
   <div class="sec__body">
@@ -258,8 +264,8 @@
 <!-- ── Education ───────────────────────────────────────────────────────── -->
 <section class="sec" id="education">
   <div class="sec__head">
-    <p class="eyebrow">Education</p>
-    <h2 class="sec__title">Two degrees at once</h2>
+    <p class="eyebrow">{{.T "Education" "Formación"}}</p>
+    <h2 class="sec__title">{{.T "Two degrees at once" "Dos carreras a la vez"}}</h2>
   </div>
   <div class="sec__body">
     <div class="grid grid--studies">
@@ -274,7 +280,7 @@
     </div>
 
     <div class="langs">
-      <h3 class="langs__title">Languages</h3>
+      <h3 class="langs__title">{{.T "Languages" "Idiomas"}}</h3>
       {{range .Languages}}
       <div class="lang">
         <span class="lang__name">{{.Name}}</span>
@@ -290,9 +296,9 @@
 {{if .FunFacts}}
 <section class="sec" id="facts">
   <div class="sec__head">
-    <p class="eyebrow">Off the clock</p>
-    <h2 class="sec__title">Fun facts about me</h2>
-    <p class="sec__note">The things that do not fit on a CV.</p>
+    <p class="eyebrow">{{.T "Off the clock" "Fuera del horario"}}</p>
+    <h2 class="sec__title">{{.T "Fun facts about me" "Datos curiosos sobre mí"}}</h2>
+    <p class="sec__note">{{.T "The things that do not fit on a CV." "Lo que no cabe en una hoja de vida."}}</p>
   </div>
   <ul class="facts">
     {{range .FunFacts}}
@@ -310,8 +316,8 @@
 <section class="verdict" id="ai">
   <div class="verdict__inner">
     <div class="sec__head">
-      <p class="eyebrow eyebrow--inv">Second opinion</p>
-      <h2 class="sec__title sec__title--inv">What does the AI think of me?</h2>
+      <p class="eyebrow eyebrow--inv">{{.T "Second opinion" "Segunda opinión"}}</p>
+      <h2 class="sec__title sec__title--inv">{{.T "What does the AI think of me?" "¿Qué piensa la IA sobre mí?"}}</h2>
     </div>
 
     <p class="verdict__lede">{{.AIVerdict.Lede}}</p>
@@ -334,8 +340,8 @@
 <!-- ── Contact ─────────────────────────────────────────────────────────── -->
 <section class="sec sec--last" id="contact">
   <div class="sec__head">
-    <p class="eyebrow">Contact</p>
-    <h2 class="sec__title">Let’s talk</h2>
+    <p class="eyebrow">{{.T "Contact" "Contacto"}}</p>
+    <h2 class="sec__title">{{.T "Let’s talk" "Hablemos"}}</h2>
   </div>
   <div class="sec__body">
     <ul class="contact">
@@ -351,11 +357,11 @@
 
 <footer class="foot">
   <p>{{.Profile.Name}} · {{.Profile.Location}}</p>
-  <p class="foot__meta">Built in Go — server, templates and typed content. {{.SourceNote}}. Updated {{.BuiltAt}}.</p>
+  <p class="foot__meta">{{.T "Built in Go — server, templates and typed content." "Hecho en Go: servidor, plantillas y contenido tipado."}} {{.SourceNote}}. {{.T "Updated" "Actualizado el"}} {{.BuiltAt}}.</p>
 </footer>
 </div>
 
-<script src="static/js/site.js" defer></script>
+<script src="{{.Root}}static/js/site.js" defer></script>
 </body>
 </html>
 {{- end}}
